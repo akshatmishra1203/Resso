@@ -1,11 +1,8 @@
-import { Router } from 'express';
-import { protectRoute } from '../middleware/auth.middleware.js';
-import { getAllUsers } from '../controller/user.controller.js';
+import express from 'express';
+import { registerUser } from '../controller/user.controller.js';
 
-const router = Router();
+const router = express.Router();
 
-router.get("/", protectRoute , getAllUsers );
+router.post('/', registerUser);
 
-// todo: getMessages
-
-export default router; 
+export default router;
