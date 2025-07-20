@@ -132,7 +132,6 @@ export const AlbumPage = () => {
                 </div>
             </div>
         </ScrollArea>
-
-    </div>;
+    </div>
 };
 export default AlbumPage;

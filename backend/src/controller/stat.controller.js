@@ -6,7 +6,7 @@ export const getStats = async(req , res , next)=>{
         const [totalSongs , totalAlbums , totalUsers , uniqueArtists] = await Promise.all([
             Song.countDocuments(),
             Album.countDocuments(),
-            User,countDocuments(),
+            User.countDocuments(),
 
             Song.aggregate([
                 {

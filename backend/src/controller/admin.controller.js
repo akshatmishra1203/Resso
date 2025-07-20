@@ -76,7 +76,7 @@ export const deleteSong = async (req , res , next ) => {
 
 export const createAlbum = async (req , res , next ) => {
     try {
-        const {title , aritst , releaseYear} = req.body;
+        const {title , artist , releaseYear} = req.body;
 
         const {imageFile} = req.files;
 
