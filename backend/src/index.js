@@ -4,6 +4,7 @@ import { clerkMiddleware } from '@clerk/express';
 import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";  
+import {initializeSocket} from "./lib/socket.js";
 
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
@@ -19,6 +20,11 @@ dotenv.config();
 
 const __dirname = path.resolve();
 const app = express();
+
+const httpServer = createServer(app);
+initializeSocket(httpServer);
+
+
 app.use(cors(
     {
         origin: "http://localhost:3000",
@@ -49,13 +55,13 @@ app.use("/api/albums", albumRoutes);
 app.use("/api/stats", statRoutes);
 
 import mongoose from 'mongoose';
+import { createServer } from "http";
 
 
 dotenv.config();
 
 app.use(cors());
 app.use(express.json());
-
 // API Route
 app.use('/api/users', userRoutes);
 
@@ -66,8 +72,10 @@ mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => console.log('MongoDB Connection Error:', err));
-// todo: socket.io
 
+httpServer.listen(PORT, () => {
+    console.log("Server is running on port " + PORT);
+});

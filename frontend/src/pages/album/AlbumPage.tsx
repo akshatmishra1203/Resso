@@ -125,7 +125,7 @@ export const AlbumPage = () => {
                                         </div>
                                     )
                                 }
-                                )};
+                                )}
                             </div>
                         </div>
                     </div>
