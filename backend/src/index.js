@@ -4,6 +4,7 @@ import { clerkMiddleware } from '@clerk/express';
 import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";  
+import fs from "fs";
 import {initializeSocket} from "./lib/socket.js";
 
 import userRoutes from "./routes/user.route.js";
@@ -13,7 +14,7 @@ import songRoutes from "./routes/song.route.js";
 import albumRoutes from "./routes/album.route.js";
 import statRoutes from "./routes/stat.route.js";
 
-import { connectDB } from "./lib/db.js";
+import cron from "node-cron";
 
 
 dotenv.config();
@@ -45,6 +46,21 @@ app.use(
         },
     })
 );
+const tempDir = path.join(process.cwd(),"tmp")
+// cron jobs
+cron.schedule("0 * * * *",() => {
+    if(fs.existsSync(tempDir)) {
+        fs.readdir(tempDir,(err, files) => {
+            if (err) {
+                console.log("error" , err);
+                return;
+            }
+            for (const file of files) {
+                fs.unlink(path.join(tempDir, file),(err) => {});
+            }
+        });
+    }
+})
 
 
 app.use("/api/users", userRoutes);
@@ -53,6 +69,15 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/songs", songRoutes);
 app.use("/api/albums", albumRoutes);
 app.use("/api/stats", statRoutes);
+
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")))
+    app.get("*", (req,res) => {
+        res.sendFile(path.resolve(__dirname,"../frontend","dist","index.html"));
+    });
+}
+
+
 
 import mongoose from 'mongoose';
 import { createServer } from "http";
